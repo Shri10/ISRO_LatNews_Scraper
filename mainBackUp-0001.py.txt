@@ -1,0 +1,36 @@
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+# URL and headers
+url = 'https://www.isro.gov.in'
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
+}
+
+# Fetch the webpage
+response = requests.get(url, headers=headers)
+
+if response.status_code == 200:
+    html_content = response.text
+
+# Parse the HTML content
+soup = BeautifulSoup(html_content, 'html.parser')
+
+# Extract latest news headlines, dates, and URLs
+# accordion
+# news_section = soup.find('div', class_='latest-news')
+# news_section = soup.find('div', class_='accordion')
+news_section = soup.find('div', class_='accordion-item')
+headlines = [item.text.strip() for item in news_section.find_all('span', class_='field-content')]
+dates = [item.text.strip() for item in news_section.find_all('span', class_='date-display-single')]
+urls = [url + item['href'] for item in news_section.find_all('a', class_='views-more-link')]
+
+# Save the data to a CSV file
+with open('isro_latest_news.csv', 'w', newline='', encoding='utf-8') as csvfile:
+    fieldnames = ['Date', 'Headline', 'URL']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+    writer.writeheader()
+    for date, headline, url in zip(dates, headlines, urls):
+        writer.writerow({'Date': date, 'Headline': headline, 'URL': url})
