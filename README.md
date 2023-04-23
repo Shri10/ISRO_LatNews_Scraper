@@ -1,5 +1,6 @@
 ``` text
-please find the correct version @ :https://github.com/Shri10/ISRO_LatestNews_Scraper
+Please find the correct version @ :https://github.com/Shri10/ISRO_LatestNews_Scraper
+This is only development version
 ```
 
 # ISRO Links Scraper
